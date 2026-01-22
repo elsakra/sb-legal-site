@@ -1,0 +1,112 @@
+---
+interface Resource {
+  title: string;
+  description: string;
+  href: string;
+  cta?: string;
+  icon?: string;
+}
+
+interface Props {
+  headline?: string;
+  resources: Resource[];
+}
+
+const { headline = "Resources", resources } = Astro.props;
+
+// Icon SVGs for different resource types
+const icons = {
+  document: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />`,
+  calendar: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />`,
+  home: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />`,
+  info: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />`,
+};
+---
+
+<section class="bg-gradient-to-b from-neutral-50 to-white py-20 lg:py-28 relative overflow-hidden">
+  <!-- Subtle background decoration -->
+  <div class="absolute inset-0 opacity-30">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-primary-500/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-primary-500/5 rounded-full blur-3xl"></div>
+  </div>
+  
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+    <!-- Section Header -->
+    <div class="mb-14 lg:mb-16" data-reveal>
+      <div class="inline-flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-neutral-500 mb-4 font-medium">
+        <span class="h-[2px] w-10 bg-primary-500"></span>
+        <span>Resources</span>
+      </div>
+      <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl text-charcoal-950 tracking-[-0.03em]">
+        {headline}
+      </h2>
+    </div>
+    
+    <!-- Premium Resource Cards -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8" data-reveal-stagger>
+      {resources.map((resource, index) => (
+        <a 
+          href={resource.href}
+          class="group relative block bg-white border border-neutral-200/80 p-8 lg:p-10 rounded-sm overflow-hidden transition-all duration-500 hover:border-transparent hover:shadow-premium-lg hover:-translate-y-2"
+          data-card
+        >
+          <!-- Gradient overlay on hover -->
+          <div class="absolute inset-0 bg-gradient-to-br from-white via-white to-primary-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+          
+          <!-- Top accent line - animates on hover -->
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-primary-400 to-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+          
+          <!-- Left accent bar -->
+          <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary-500 transform scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-top"></div>
+          
+          <div class="relative">
+            <!-- Icon circle -->
+            <div class="w-14 h-14 rounded-full bg-primary-500/10 flex items-center justify-center mb-6 group-hover:bg-primary-500 group-hover:scale-110 transition-all duration-500">
+              <svg class="w-6 h-6 text-primary-500 group-hover:text-white transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                {index % 4 === 0 ? (
+                  <Fragment set:html={icons.document} />
+                ) : index % 4 === 1 ? (
+                  <Fragment set:html={icons.calendar} />
+                ) : index % 4 === 2 ? (
+                  <Fragment set:html={icons.home} />
+                ) : (
+                  <Fragment set:html={icons.info} />
+                )}
+              </svg>
+            </div>
+            
+            <!-- Title -->
+            <h3 class="font-display text-xl lg:text-2xl text-charcoal-900 mb-4 group-hover:text-primary-700 transition-colors duration-300 leading-tight tracking-tight">
+              {resource.title}
+            </h3>
+            
+            <!-- Description -->
+            <p class="text-neutral-600 leading-relaxed mb-6 text-sm lg:text-base line-clamp-3">
+              {resource.description}
+            </p>
+            
+            <!-- CTA with animated arrow -->
+            <span class="inline-flex items-center gap-2 text-primary-500 font-semibold text-sm group-hover:gap-4 transition-all duration-300">
+              {resource.cta || "Learn more"}
+              <span class="w-8 h-8 rounded-full border border-primary-200 flex items-center justify-center group-hover:border-primary-500 group-hover:bg-primary-500 transition-all duration-300">
+                <svg class="w-4 h-4 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </span>
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Line clamp for description */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

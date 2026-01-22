@@ -1,0 +1,245 @@
+---
+interface NewsItem {
+  headline: string;
+  href: string;
+  type?: string;
+  date?: string;
+}
+
+interface Props {
+  items: NewsItem[];
+  headline?: string;
+}
+
+const { items, headline = "What Matters" } = Astro.props;
+
+// Format date if provided
+function formatDate(dateStr?: string): string {
+  if (!dateStr) return '';
+  const date = new Date(dateStr);
+  return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+// Use all items for the carousel (up to 8)
+const displayItems = items.slice(0, 8);
+const totalSlides = displayItems.length;
+---
+
+<section class="bg-charcoal-950 py-16 lg:py-20 overflow-hidden" data-news-carousel>
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
+    <!-- Section Header - Cooley style with slide controls -->
+    <div class="flex items-center justify-between gap-6 mb-10" data-reveal>
+      <!-- Left: Navigation arrows and slide indicator -->
+      <div class="flex items-center gap-4">
+        <button 
+          type="button" 
+          class="news-prev w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:border-primary-500 hover:text-primary-500 transition-all duration-300 hover:scale-105" 
+          aria-label="Previous slide"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </button>
+        <button 
+          type="button" 
+          class="news-next w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:border-primary-500 hover:text-primary-500 transition-all duration-300 hover:scale-105" 
+          aria-label="Next slide"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Right: Slide counter -->
+      <div class="flex items-center gap-4">
+        <div class="text-sm text-white/40 font-mono">
+          <span class="news-current text-white">1</span>
+          <span class="mx-1">/</span>
+          <span>{totalSlides}</span>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Carousel Container -->
+    <div class="relative">
+      <!-- Slides Container -->
+      <div class="news-slides-container overflow-hidden">
+        <div class="news-slides flex transition-transform duration-700 ease-out">
+          {displayItems.map((item, index) => (
+            <div class="news-slide flex-shrink-0 w-full md:w-1/2 lg:w-1/3 px-3 first:pl-0" data-index={index}>
+              <a 
+                href={item.href}
+                class="group block h-full"
+              >
+                <article class="h-full flex flex-col py-8 border-t border-white/10 group-hover:border-primary-500/50 transition-colors duration-300">
+                  <!-- Type badge -->
+                  {item.type && (
+                    <span class="inline-flex self-start px-3 py-1 bg-primary-500/20 text-primary-400 text-xs font-semibold uppercase tracking-wider mb-4">
+                      {item.type}
+                    </span>
+                  )}
+                  
+                  <!-- Headline - Large, dramatic -->
+                  <h3 class="font-display text-2xl lg:text-3xl text-white group-hover:text-primary-400 transition-colors duration-300 leading-tight mb-6 pr-4">
+                    {item.headline}
+                  </h3>
+                  
+                  <!-- Footer with date and arrow -->
+                  <div class="mt-auto flex items-center justify-between">
+                    {item.date && (
+                      <span class="text-sm text-white/40">
+                        {formatDate(item.date)}
+                      </span>
+                    )}
+                    <div class="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center text-white/40 group-hover:border-primary-500 group-hover:text-primary-500 group-hover:bg-primary-500/10 transition-all duration-300 ml-auto">
+                      <svg class="w-4 h-4 transform group-hover:translate-x-0.5 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </div>
+                  </div>
+                </article>
+              </a>
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <!-- Progress bar -->
+      <div class="mt-8 h-px bg-white/10 relative overflow-hidden">
+        <div class="news-progress h-full bg-primary-500 transition-all duration-700 ease-out" style="width: 0%"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Ensure smooth sliding */
+  .news-slides {
+    will-change: transform;
+  }
+  
+  .news-slide {
+    opacity: 0.4;
+    transform: scale(0.95);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  
+  .news-slide.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Auto-advance pause on hover */
+  [data-news-carousel]:hover .news-slides {
+    animation-play-state: paused;
+  }
+</style>
+
+<script>
+  // News Carousel - Cooley-style sliding headlines
+  const carousel = document.querySelector('[data-news-carousel]');
+  
+  if (carousel) {
+    const slides = carousel.querySelectorAll('.news-slide');
+    const slidesContainer = carousel.querySelector('.news-slides') as HTMLElement;
+    const prevBtn = carousel.querySelector('.news-prev');
+    const nextBtn = carousel.querySelector('.news-next');
+    const currentIndicator = carousel.querySelector('.news-current');
+    const progressBar = carousel.querySelector('.news-progress') as HTMLElement;
+    
+    let currentIndex = 0;
+    const totalSlides = slides.length;
+    const slidesPerView = window.innerWidth >= 1024 ? 3 : window.innerWidth >= 768 ? 2 : 1;
+    const maxIndex = Math.max(0, totalSlides - slidesPerView);
+    
+    // Auto-advance interval (6 seconds)
+    let autoAdvanceInterval: ReturnType<typeof setInterval>;
+    const AUTO_ADVANCE_DELAY = 6000;
+    
+    function updateCarousel(animate = true) {
+      if (!slidesContainer) return;
+      
+      // Calculate slide width
+      const slideWidth = (slides[0] as HTMLElement).offsetWidth;
+      const translateX = -currentIndex * slideWidth;
+      
+      slidesContainer.style.transition = animate ? 'transform 0.7s cubic-bezier(0.25, 1, 0.5, 1)' : 'none';
+      slidesContainer.style.transform = `translateX(${translateX}px)`;
+      
+      // Update active states
+      slides.forEach((slide, i) => {
+        if (i >= currentIndex && i < currentIndex + slidesPerView) {
+          slide.classList.add('active');
+        } else {
+          slide.classList.remove('active');
+        }
+      });
+      
+      // Update counter
+      if (currentIndicator) {
+        currentIndicator.textContent = String(currentIndex + 1);
+      }
+      
+      // Update progress bar
+      if (progressBar) {
+        const progress = ((currentIndex + 1) / (maxIndex + 1)) * 100;
+        progressBar.style.width = `${progress}%`;
+      }
+    }
+    
+    function nextSlide() {
+      currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
+      updateCarousel();
+    }
+    
+    function prevSlide() {
+      currentIndex = currentIndex <= 0 ? maxIndex : currentIndex - 1;
+      updateCarousel();
+    }
+    
+    function startAutoAdvance() {
+      stopAutoAdvance();
+      autoAdvanceInterval = setInterval(nextSlide, AUTO_ADVANCE_DELAY);
+    }
+    
+    function stopAutoAdvance() {
+      if (autoAdvanceInterval) {
+        clearInterval(autoAdvanceInterval);
+      }
+    }
+    
+    // Event listeners
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => {
+        nextSlide();
+        startAutoAdvance(); // Reset timer on manual navigation
+      });
+    }
+    
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => {
+        prevSlide();
+        startAutoAdvance(); // Reset timer on manual navigation
+      });
+    }
+    
+    // Pause on hover
+    carousel.addEventListener('mouseenter', stopAutoAdvance);
+    carousel.addEventListener('mouseleave', startAutoAdvance);
+    
+    // Initialize
+    updateCarousel(false);
+    startAutoAdvance();
+    
+    // Handle resize
+    let resizeTimeout: ReturnType<typeof setTimeout>;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        currentIndex = 0;
+        updateCarousel(false);
+      }, 250);
+    });
+  }
+</script>

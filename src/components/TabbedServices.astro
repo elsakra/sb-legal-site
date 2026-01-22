@@ -1,0 +1,235 @@
+---
+import { getCollection } from 'astro:content';
+
+interface Props {
+  headline?: string;
+  practicesHeadline?: string;
+  industriesHeadline?: string;
+}
+
+const { 
+  headline = "Key Services",
+  practicesHeadline = "Practices",
+  industriesHeadline = "Industries"
+} = Astro.props;
+
+const services = await getCollection('services');
+const sortedServices = services.sort((a, b) => (a.data.order || 0) - (b.data.order || 0));
+
+// Group into practices and industries (if tagged)
+const practices = sortedServices.filter(s => !s.data.category || s.data.category === 'practice');
+const industries = sortedServices.filter(s => s.data.category === 'industry');
+---
+
+<section class="bg-white py-20 lg:py-28 relative overflow-hidden">
+  <!-- Subtle background pattern -->
+  <div class="absolute inset-0 opacity-[0.02]" style="background-image: radial-gradient(#C41E1E 1px, transparent 1px); background-size: 40px 40px;"></div>
+  
+  <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10">
+    <!-- Section Header with Cooley styling -->
+    <div class="mb-12 lg:mb-16" data-reveal>
+      <div class="inline-flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-neutral-500 mb-4 font-medium">
+        <span class="h-[2px] w-10 bg-primary-500"></span>
+        <span>Practice Areas</span>
+      </div>
+      <h2 class="font-display text-4xl sm:text-5xl lg:text-6xl text-charcoal-950 tracking-[-0.03em]">
+        {headline}
+      </h2>
+    </div>
+    
+    <!-- Tab Buttons (only show if we have industries) -->
+    {industries.length > 0 && (
+      <div class="flex flex-wrap gap-3 mb-12" role="tablist" data-reveal>
+        <button 
+          type="button"
+          class="tab-button px-8 py-4 text-sm font-semibold uppercase tracking-[0.2em] transition-all duration-300 active"
+          data-tab="practices"
+          role="tab"
+          aria-selected="true"
+        >
+          {practicesHeadline}
+        </button>
+        <button 
+          type="button"
+          class="tab-button px-8 py-4 text-sm font-semibold uppercase tracking-[0.2em] transition-all duration-300"
+          data-tab="industries"
+          role="tab"
+          aria-selected="false"
+        >
+          {industriesHeadline}
+        </button>
+      </div>
+    )}
+    
+    <!-- Practices Tab / Main Content -->
+    <div class="tab-content" id="practices-tab" role="tabpanel">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6" data-reveal-stagger>
+        {practices.map((service, index) => (
+          <a 
+            href={`/services/${service.slug}`}
+            class="group relative flex items-center justify-between p-7 lg:p-8 bg-neutral-50 border border-neutral-200/80 rounded-sm overflow-hidden hover:bg-white hover:border-transparent hover:shadow-premium transition-all duration-500 hover:-translate-y-1"
+            data-card
+          >
+            <!-- Animated gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-r from-primary-50/0 via-primary-50/50 to-primary-50/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+            
+            <!-- Top accent line -->
+            <div class="absolute top-0 left-0 right-0 h-[3px] bg-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+            
+            <!-- Left accent bar on hover -->
+            <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-bottom"></div>
+            
+            <!-- Large decorative number -->
+            <div class="absolute top-4 right-4 font-display text-7xl font-bold text-primary-500/5 group-hover:text-primary-500/10 transition-colors duration-500 select-none">
+              {String(index + 1).padStart(2, '0')}
+            </div>
+            
+            <div class="relative flex items-center justify-between w-full gap-4">
+              <h3 class="font-display text-xl lg:text-2xl text-charcoal-900 group-hover:text-primary-700 transition-colors duration-300 pr-4 leading-tight tracking-tight">
+                {service.data.title}
+              </h3>
+              
+              <!-- Arrow circle with premium hover -->
+              <div class="w-12 h-12 rounded-full border-2 border-neutral-200 group-hover:border-primary-500 group-hover:bg-primary-500 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110">
+                <svg class="w-5 h-5 text-neutral-400 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+    
+    <!-- Industries Tab -->
+    {industries.length > 0 && (
+      <div class="tab-content hidden" id="industries-tab" role="tabpanel">
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-6">
+          {industries.map((service, index) => (
+            <a 
+              href={`/services/${service.slug}`}
+              class="group relative flex items-center justify-between p-7 lg:p-8 bg-neutral-50 border border-neutral-200/80 rounded-sm overflow-hidden hover:bg-white hover:border-transparent hover:shadow-premium transition-all duration-500 hover:-translate-y-1"
+              data-card
+            >
+              <!-- Animated gradient overlay -->
+              <div class="absolute inset-0 bg-gradient-to-r from-primary-50/0 via-primary-50/50 to-primary-50/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              
+              <!-- Top accent line -->
+              <div class="absolute top-0 left-0 right-0 h-[3px] bg-primary-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
+              
+              <!-- Left accent bar on hover -->
+              <div class="absolute left-0 top-0 bottom-0 w-1 bg-primary-500 scale-y-0 group-hover:scale-y-100 transition-transform duration-500 origin-bottom"></div>
+              
+              <!-- Large decorative number -->
+              <div class="absolute top-4 right-4 font-display text-7xl font-bold text-primary-500/5 group-hover:text-primary-500/10 transition-colors duration-500 select-none">
+                {String(index + 1).padStart(2, '0')}
+              </div>
+              
+              <div class="relative flex items-center justify-between w-full gap-4">
+                <h3 class="font-display text-xl lg:text-2xl text-charcoal-900 group-hover:text-primary-700 transition-colors duration-300 pr-4 leading-tight tracking-tight">
+                  {service.data.title}
+                </h3>
+                
+                <!-- Arrow circle with premium hover -->
+                <div class="w-12 h-12 rounded-full border-2 border-neutral-200 group-hover:border-primary-500 group-hover:bg-primary-500 flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110">
+                  <svg class="w-5 h-5 text-neutral-400 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+    
+    <!-- View All Link with arrow circle -->
+    <div class="mt-14 flex items-center gap-6" data-reveal>
+      <a href="/services" class="group inline-flex items-center gap-4 text-primary-500 font-semibold hover:gap-6 transition-all duration-300">
+        <span class="text-lg">View all practices</span>
+        <span class="w-10 h-10 rounded-full border-2 border-primary-200 group-hover:border-primary-500 group-hover:bg-primary-500 flex items-center justify-center transition-all duration-300">
+          <svg class="w-4 h-4 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </span>
+      </a>
+      {industries.length > 0 && (
+        <a href="/services?category=industry" class="text-neutral-500 hover:text-charcoal-900 transition-colors">
+          Industries
+        </a>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .tab-button {
+    color: #525252;
+    background: transparent;
+    border-bottom: 3px solid transparent;
+    position: relative;
+  }
+
+  .tab-button:hover {
+    color: #18181b;
+  }
+
+  .tab-button.active {
+    color: #C41E1E;
+    border-bottom-color: #C41E1E;
+  }
+  
+  .tab-button.active::before {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: #C41E1E;
+    animation: slideIn 0.3s ease;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+</style>
+
+<script>
+  const tabButtons = document.querySelectorAll('.tab-button');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const tabId = button.getAttribute('data-tab');
+      
+      // Update buttons
+      tabButtons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.setAttribute('aria-selected', 'false');
+      });
+      button.classList.add('active');
+      button.setAttribute('aria-selected', 'true');
+      
+      // Update content with fade animation
+      tabContents.forEach(content => {
+        content.classList.add('hidden');
+        content.style.opacity = '0';
+      });
+      
+      const activeTab = document.getElementById(`${tabId}-tab`);
+      if (activeTab) {
+        activeTab.classList.remove('hidden');
+        // Trigger reflow for animation
+        activeTab.offsetHeight;
+        activeTab.style.opacity = '1';
+        activeTab.style.transition = 'opacity 0.4s ease';
+      }
+    });
+  });
+</script>

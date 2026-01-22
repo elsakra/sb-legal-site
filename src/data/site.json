@@ -1,0 +1,88 @@
+{
+  "company": {
+    "name": "SB Legal",
+    "tagline": "Experienced. Aggressive. Reliable.",
+    "description": "Utah-based attorneys who get results. In the last 10 years, we've handled, and more importantly won, hundreds of cases. From criminal defense to immigration matters, we've seen and tackled it all. We help people keep their lives on track, by getting them results.",
+    "phone": "801.656.1901",
+    "email": "jbaron@sb-legal.net",
+    "address": "2901 Bluegrass Boulevard, Suite 200-14, Lehi, UT 84043",
+    "hours": null
+  },
+  "branding": {
+    "logo": "https://res.cloudinary.com/dil14r8je/image/upload/v1769107573/auto-site-builder/SB%20Legal/image_2.png",
+    "primaryColor": "#1e3a5f",
+    "secondaryColor": null
+  },
+  "hero": {
+    "headline": "We help people keep their lives on track, by getting them results.",
+    "subheadline": "Utah-based attorneys who get results. In the last 10 years, we've handled, and more importantly won, hundreds of cases. From criminal defense to immigration matters, we've seen and tackled it all.",
+    "cta": {
+      "label": "Click To Call Us Now",
+      "href": "/contact"
+    },
+    "secondaryCta": null,
+    "backgroundImage": "https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=1920&h=1080&fit=crop&q=80",
+    "imageOpacity": 35
+  },
+  "sections": {
+    "about": {
+      "headline": "About Joshua",
+      "content": "At the age of 18, Joshua Baron graduated with his Bachelor of Arts in History from Cal Poly, Pomona summa cum laude. He then served an LDS mission in Viña del Mar, Chile where he learned to speak Spanish. In 2007, Mr. Baron graduated cum laude from the J. Reuben Clark School of Law at Brigham Young University, where he was Executive Editor of the Journal of Public Law and Associate Editor of the Education Law Journal. After law school, Mr. Baron became a civil litigator in Park City where he defended multi-million dollar construction companies and real estate developers in commercial litigation. Looking to develop more experience in trial, he left civil litigation for the Salt Lake City Prosecutor's Office in 2008 where he handled over 1500 criminal cases per year, including over thirty jury trials.",
+      "image": "https://res.cloudinary.com/dil14r8je/image/upload/v1769107573/auto-site-builder/SB%20Legal/image_3.jpg",
+      "values": [
+        {
+          "title": "Experienced",
+          "description": "We've handled, and won, hundreds of cases. Many of our attorneys are former prosecutors or have worked in government or private practice."
+        },
+        {
+          "title": "Aggressive",
+          "description": "From winning acquittals in major felonies, to beating the government in deportation cases, our attorneys have an impressive history of being able to achieve victories."
+        },
+        {
+          "title": "Reliable",
+          "description": "We strive to return phone calls and emails within 24 hours. If you have any questions, one of our attorneys is standing by to take your call."
+        }
+      ]
+    },
+    "services": {
+      "headline": "Practice Areas"
+    },
+    "team": {
+      "headline": "Our Attorneys"
+    },
+    "testimonials": {
+      "headline": "What Our Clients Say"
+    },
+    "contact": {
+      "headline": "Contact Us"
+    }
+  },
+  "navigation": {
+    "items": [
+      {
+        "label": "About",
+        "href": "/about"
+      },
+      {
+        "label": "Contact",
+        "href": "/contact"
+      }
+    ],
+    "ctaButton": {
+      "label": "Let us review your case",
+      "href": "/portfolio"
+    }
+  },
+  "footer": {
+    "copyright": "© 2024 SB Legal. All rights reserved.",
+    "socialLinks": {
+      "facebook": null
+    }
+  },
+  "seo": {
+    "title": "SB Legal | Attorneys at Law | Experienced. Aggressive. Reliable.",
+    "description": "Attorneys who get results. Over the last 10 years, we've won, hundreds of cases. From criminal law to immigration matters, you'll be taken care of."
+  },
+  "theme": "light",
+  "vibe": "community"
+}
